@@ -6,7 +6,8 @@ import "./globals.css";
 const geist = Geist({ variable: "--font-geist", subsets: ["latin"], display: "swap" });
 const serif = Instrument_Serif({ variable: "--font-serif", subsets: ["latin"], weight: "400", display: "swap" });
 
-const base = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000";
+const host = process.env.VERCEL_PROJECT_PRODUCTION_URL ?? process.env.VERCEL_URL;
+const base = host ? `https://${host}` : "http://localhost:3000";
 
 export const metadata: Metadata = {
   metadataBase: new URL(base),
