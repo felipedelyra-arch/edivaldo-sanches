@@ -10,12 +10,14 @@ const fmt = new Intl.NumberFormat("pt-BR");
 /**
  * Global motion layer, driven by data attributes so sections stay server components:
  * [data-reveal] > [data-r]  staggered entrance · [data-count] count-up · [data-draw] stroke draw
- * [data-parallax] slow image drift · [data-hscroll] pinned horizontal timeline (desktop only).
+ * [data-parallax] slow image drift · [data-hscroll] pinned horizontal timeline · [data-colorize] in-view colour.
  * Everything lives in gsap.matchMedia, so reduced motion gets the static page and cleanup is automatic.
  */
 export function Motion() {
   useEffect(() => {
     const mm = gsap.matchMedia();
+    // Mobile address bar resizes must not re-measure pinned sections mid-scroll.
+    ScrollTrigger.config({ ignoreMobileResize: true });
 
     mm.add(MOTION_OK, () => {
       const lenis = new Lenis({ autoRaf: false, anchors: true, lerp: 0.11 });
@@ -25,6 +27,29 @@ export function Motion() {
       gsap.ticker.add(tick);
       gsap.ticker.lagSmoothing(0);
       if (document.documentElement.hasAttribute("data-intro")) lenis.stop();
+
+      // Pin first: triggers below it must be measured after the pin spacer exists.
+      gsap.utils.toArray<HTMLElement>("[data-hscroll]").forEach((section) => {
+        const viewport = section.querySelector<HTMLElement>("[data-viewport]");
+        const track = section.querySelector<HTMLElement>("[data-track]");
+        const bar = section.querySelector<HTMLElement>("[data-progress]");
+        if (!viewport || !track) return;
+        gsap.set(viewport, { overflow: "hidden" });
+        const distance = () => track.scrollWidth - viewport.clientWidth;
+        gsap.to(track, {
+          x: () => -distance(),
+          ease: "none",
+          scrollTrigger: {
+            trigger: section,
+            pin: true,
+            scrub: 0.8,
+            end: () => `+=${distance()}`,
+            invalidateOnRefresh: true,
+            anticipatePin: 1,
+            onUpdate: (st) => bar && gsap.set(bar, { scaleX: st.progress }),
+          },
+        });
+      });
       const resume = () => lenis.start();
       window.addEventListener("es:intro-done", resume);
 
@@ -73,35 +98,17 @@ export function Motion() {
         );
       });
 
+      // Touch screens have no hover: works gain colour and scale as they enter the viewport.
+      gsap.utils.toArray<HTMLElement>("[data-colorize]").forEach((el) => {
+        ScrollTrigger.create({ trigger: el, start: "top 75%", end: "bottom 25%", toggleClass: "is-in" });
+      });
+
       return () => {
         window.removeEventListener("es:intro-done", resume);
         gsap.ticker.remove(tick);
         lenis.destroy();
         smooth.lenis = null;
       };
-    });
-
-    mm.add(`(min-width: 900px) and ${MOTION_OK}`, () => {
-      gsap.utils.toArray<HTMLElement>("[data-hscroll]").forEach((section) => {
-        const viewport = section.querySelector<HTMLElement>("[data-viewport]");
-        const track = section.querySelector<HTMLElement>("[data-track]");
-        const bar = section.querySelector<HTMLElement>("[data-progress]");
-        if (!viewport || !track) return;
-        gsap.set(viewport, { overflow: "hidden" });
-        const distance = () => track.scrollWidth - viewport.clientWidth;
-        gsap.to(track, {
-          x: () => -distance(),
-          ease: "none",
-          scrollTrigger: {
-            trigger: section,
-            pin: true,
-            scrub: 0.8,
-            end: () => `+=${distance()}`,
-            invalidateOnRefresh: true,
-            onUpdate: (st) => bar && gsap.set(bar, { scaleX: st.progress }),
-          },
-        });
-      });
     });
 
     return () => mm.revert();

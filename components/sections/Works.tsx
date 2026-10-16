@@ -54,16 +54,16 @@ export function Works() {
               <button type="button" onClick={() => show(w)} className="group block w-full text-left" data-hot>
                 <div className="relative aspect-[16/9] overflow-hidden bg-ink-2">
                   {w.image ? (
-                    <div className="h-full w-full scale-[1.04] grayscale-[0.55] transition-[transform,filter] duration-700 ease-[var(--ease-out-expo)] group-hover:scale-100 group-hover:grayscale-0 group-focus-visible:grayscale-0">
+                    <div data-colorize className="h-full w-full scale-[1.04] grayscale-[0.55] transition-[transform,filter] duration-700 ease-[var(--ease-out-expo)] group-hover:scale-100 group-hover:grayscale-0 group-focus-visible:grayscale-0 [@media(hover:none)]:[&.is-in]:scale-100 [@media(hover:none)]:[&.is-in]:grayscale-0">
                       <Picture image={w.image} />
                     </div>
                   ) : (
-                    <div className="flex h-full flex-col justify-between p-5 text-stone/60 transition-colors duration-500 group-hover:text-brass">
+                    <div data-colorize className="flex h-full flex-col justify-between p-5 text-stone/60 transition-colors duration-500 group-hover:text-brass [@media(hover:none)]:[&.is-in]:text-brass">
                       <span className="display num text-2xl text-stone">{w.year}</span>
                       <TechDrawing name={w.drawing ?? ""} className="mx-auto w-[78%]" />
                     </div>
                   )}
-                  <span className="absolute bottom-0 right-0 bg-brass px-4 py-2 text-sm text-ink opacity-0 transition-opacity duration-300 group-hover:opacity-100 group-focus-visible:opacity-100">
+                  <span className="absolute bottom-0 right-0 bg-brass px-4 py-2 text-sm text-ink opacity-0 transition-opacity duration-300 group-hover:opacity-100 group-focus-visible:opacity-100 [@media(hover:none)]:opacity-100">
                     {works.open} →
                   </span>
                 </div>

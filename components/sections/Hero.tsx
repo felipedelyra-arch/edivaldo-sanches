@@ -61,7 +61,7 @@ export function Hero() {
             </div>
           </div>
           <div className="mt-8 flex flex-wrap items-center gap-x-8 gap-y-4 lg:pl-[calc(15vw*0.9)]">
-            <a href={buildWhatsAppLink({ kind: "hero" })} target="_blank" rel="noopener noreferrer" className="btn btn-brass">
+            <a href={buildWhatsAppLink({ kind: "hero" })} target="_blank" rel="noopener noreferrer" className="btn btn-brass w-full justify-center px-4 text-[0.95rem] sm:w-auto sm:px-6 sm:text-base">
               <WhatsAppIcon />
               {hero.cta}
               <span className="sr-only"> {content.ui.newTab}</span>

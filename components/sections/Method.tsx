@@ -47,9 +47,10 @@ export function Method() {
         </div>
 
         {/* Sticky sheet */}
-        <div className="col-span-12 lg:col-span-7 lg:row-span-2">
-          <div className="sticky top-4 z-10 bg-paper pb-4 lg:top-10">
-            <figure className="sheet relative bg-paper-2 p-3 sm:p-5">
+        {/* On phones the wrapper dissolves so the sheet sticks across the whole grid while steps pass under it. */}
+        <div className="max-lg:contents lg:col-span-7 lg:row-span-2">
+          <div className="sticky top-0 z-10 col-span-12 self-start bg-paper pb-3 pt-3 lg:top-10 lg:pt-0 lg:pb-4">
+            <figure className="sheet relative bg-paper-2 p-2 sm:p-5">
               <svg viewBox="0 0 400 300" className="w-full text-ink" role="img" aria-label={`${method.sheet.label}: ${step >= TOTAL ? method.done : current.title}`}>
                 {/* 1 lot, north arrow */}
                 <rect data-at="1" className={`stroke ${on(1) ?? ""}`} x="40" y="30" width="320" height="240" pathLength={1} strokeDasharray="1" />
@@ -80,7 +81,7 @@ export function Method() {
                 {/* 7 approval stamp */}
                 <g data-at="7" className={on(7)} transform="rotate(-8 329 255)" fill="none" stroke="#7a5330">
                   <rect x="256" y="240" width="146" height="30" strokeWidth="1.5" />
-                  <text x="329" y="258" textAnchor="middle" fontSize="7.5" fill="#7a5330" stroke="none">{method.sheet.stamp.toUpperCase()}</text>
+                  <text x="329" y="258" textAnchor="middle" fontSize="6.6" fill="#7a5330" stroke="none">{method.sheet.stamp.toUpperCase()}</text>
                 </g>
                 {/* 8 complementary: electrical + plumbing */}
                 <path data-at="8" className={`stroke ${on(8) ?? ""}`} d="M110 90 Q160 120 190 90 M220 90 Q250 130 300 90 M225 215 L290 215" stroke="#7a5330" strokeDasharray="4 3" pathLength={1} />
@@ -98,7 +99,7 @@ export function Method() {
                 </g>
               </svg>
               {/* Title block (carimbo) */}
-              <figcaption className="mt-3 grid grid-cols-[auto_1fr_auto] items-end gap-x-5 bg-paper px-4 py-3 text-sm" aria-live="polite">
+              <figcaption className="mt-2 grid sm:mt-3 grid-cols-[auto_1fr_auto] items-end gap-x-5 bg-paper px-4 py-3 text-sm" aria-live="polite">
                 <span className="display num text-4xl leading-none text-brass-ink">
                   {String(Math.max(step, 1)).padStart(2, "0")}
                   <span className="text-xl text-ink/50">/{TOTAL}</span>
